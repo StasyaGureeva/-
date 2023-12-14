@@ -7,10 +7,10 @@ namespace NW\WebService\References\Operations\Notification;
  */
 class Contractor
 {
-    const TYPE_CUSTOMER = 0;
-    public $id;
-    public $type;
-    public $name;
+    private $id;
+    private $type;
+    private $name;
+    private $email;
 
     public static function getById(int $resellerId): self
     {
@@ -19,7 +19,15 @@ class Contractor
 
     public function getFullName(): string
     {
-        return $this->name . ' ' . $this->id;
+	if (isset($this->name) && isset($this->id))
+        	return $this->name . ' ' . $this->id;
+	else if (isset($this->name))
+		return $this->name;
+    }
+
+    public function getEmail(): string
+    {
+	return $this->email;
     }
 }
 
@@ -33,23 +41,21 @@ class Employee extends Contractor
 
 class Status
 {
-    public $id, $name;
-
-    public static function getName(int $id): string
+    public static function getNameById(int $id): string
     {
-        $a = [
-            0 => 'Completed',
-            1 => 'Pending',
-            2 => 'Rejected',
+        const $NAMES = [
+            'Completed',
+            'Pending',
+            'Rejected',
         ];
 
-        return $a[$id];
+        return $NAMES[$id] ?? null;
     }
 }
 
 abstract class ReferencesOperation
 {
-    abstract public function doOperation(): array;
+    abstract public function doOperation(): [];
 
     public function getRequest($pName)
     {
@@ -57,7 +63,7 @@ abstract class ReferencesOperation
     }
 }
 
-function getResellerEmailFrom()
+function getResellerEmailFrom(): string
 {
     return 'contractor@example.com';
 }
